@@ -44,12 +44,15 @@ export default function App() {
   // =====================
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
-      const data = snapshot.docs.map(doc => doc.data());
-      data.sort((a, b) => a.index - b.index);
+      const data = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id
+    }));
+
+      data.sort((a, b) => a.id.localeCompare(b.id));
       setMessages(data);
       const maxIndex =
         data.length > 0
@@ -76,8 +79,7 @@ export default function App() {
 
     await addDoc(collection(db, "messages"), {
       text: input,
-      name: user,
-      index: count
+      name: user
     });
 
     setCount(count + 1);
