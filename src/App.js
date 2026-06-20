@@ -222,7 +222,6 @@ export default function App() {
                       borderRadius: 10,
                       background: isMe ? "#4CAF50" : "#ddd",
                       color: isMe ? "white" : "black",
-                      minWidth: "60px"
                     }}
                   >
                     {!isMe && m.name ? `${m.name}: ` : ""}{m.text}
