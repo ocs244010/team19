@@ -47,8 +47,13 @@ export default function App() {
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
-      setMessages(snapshot.docs.map(doc => doc.data()));
+      const data = snapshot.docs.map(doc => doc.data());
+      // 時間で並び替え
+      data.sort((a, b) => a.createdAt - b.createdAt);
+
+      setMessages(data);
     });
+
     return () => unsub();
   }, []);
 
@@ -66,6 +71,7 @@ export default function App() {
     await addDoc(collection(db, "messages"), {
       text: input,
       name: user
+      createdAt: Date.now()
     });
 
     setInput("");
