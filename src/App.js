@@ -14,7 +14,9 @@ export default function App() {
   const [view, setView] = useState("chat");
 
   // ✅ ログイン
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(
+    localStorage.getItem("user")
+  );
   const [nameInput, setNameInput] = useState("");
   const [passInput, setPassInput] = useState("");
 
@@ -28,7 +30,11 @@ export default function App() {
       (u) => u.name === nameInput && u.password === passInput
     );
   
-    if (ok) setUser(ok.name);
+    if (ok) {
+      setUser(ok.name);
+      localStorage.setItem("user", ok.name);
+    }
+
     else alert("ログイン失敗");
   };
 
