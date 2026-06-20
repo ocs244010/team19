@@ -7,7 +7,8 @@ import {
   collection,
   addDoc,
   query,
-  orderBy
+  orderBy,
+  serverTimestamp
 } from "firebase/firestore";
 
 export default function App() {
@@ -75,7 +76,7 @@ export default function App() {
     await addDoc(collection(db, "messages"), {
       text: input,
       name: user,
-      createdAt: Date.now()
+      createdAt: serverTimestamp()
     });
 
     setInput("");
