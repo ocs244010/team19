@@ -165,32 +165,51 @@ export default function App() {
       {/* ✅ タブ（完成UI） */}
       <div style={{
         display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
         borderBottom: "2px solid #ddd",
         marginBottom: 15
       }}>
-        <div
-          onClick={() => setView("chat")}
-          style={{
-            padding: "10px 20px",
-            cursor: "pointer",
-            borderBottom: view === "chat" ? "3px solid #4CAF50" : "none",
-            fontWeight: view === "chat" ? "bold" : "normal"
-          }}
-        >
-          チャット
-        </div>
+        <div style={{ display: "flex" }}>
+         <div
+           onClick={() => setView("chat")}
+           style={{
+             padding: "10px 20px",
+             cursor: "pointer",
+             borderBottom: view === "chat" ? "3px solid #4CAF50" : "none",
+             fontWeight: view === "chat" ? "bold" : "normal"
+           }}
+         >
+           チャット
+         </div>
 
-        <div
-          onClick={() => setView("shift")}
+         <div
+           onClick={() => setView("shift")}
+           style={{
+             padding: "10px 20px",
+             cursor: "pointer",
+             borderBottom: view === "shift" ? "3px solid #4CAF50" : "none",
+             fontWeight: view === "shift" ? "bold" : "normal"
+           }}
+         >
+           シフト
+         </div>
+        </div>
+      
+        <button
+          onClick={() => {
+            setUser(null);
+            localStorage.removeItem("user");
+          }}
           style={{
-            padding: "10px 20px",
-            cursor: "pointer",
-            borderBottom: view === "shift" ? "3px solid #4CAF50" : "none",
-            fontWeight: view === "shift" ? "bold" : "normal"
+            padding: "6px 12px",
+            marginRight: 10,
+            cursor: "pointer"
           }}
         >
-          シフト
-        </div>
+          ログアウト
+        </button>
+
       </div>
 
       {/* =====================
