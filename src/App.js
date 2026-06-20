@@ -262,7 +262,8 @@ export default function App() {
               onChange={(e) => setInput(e.target.value)}
               style={{
                 flex: 1,
-                padding: 8,
+                padding: 10,
+                fontSize: 16,
                 borderRadius: 5,
                 border: "1px solid #ccc"
               }}
