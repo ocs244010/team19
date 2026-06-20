@@ -6,8 +6,6 @@ import {
   onSnapshot,
   collection,
   addDoc,
-  query,
-  orderBy,
 } from "firebase/firestore";
 
 export default function App() {
@@ -46,17 +44,21 @@ export default function App() {
   // =====================
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "messages"),
-      orderBy("createdAt", "asc")
-    );
-
-    const unsub = onSnapshot(q, (snapshot) => {
+    const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
       const data = snapshot.docs.map(doc => doc.data());
+      data.sort((a, b) => a.index - b.index);
       setMessages(data);
-    });
+      const maxIndex =
+        data.length > 0
+          ? Math.max(...data.map(m => m.index))
+          : -1;
+
+      setCount(maxIndex + 1);
+
+      });
 
     return () => unsub();
   }, []);
@@ -75,9 +77,10 @@ export default function App() {
     await addDoc(collection(db, "messages"), {
       text: input,
       name: user,
-      createdAt: Date.now() + Math.random()
+      index: count
     });
 
+    setCount(count + 1);
     setInput("");
   };
 
