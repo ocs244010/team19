@@ -52,6 +52,14 @@ export default function App() {
     return () => unsub();
   }, []);
 
+  useEffect(() => {
+    const el = document.getElementById("chat-box");
+
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [messages]);
+
   const sendMessage = async () => {
     if (!input || !user) return;
 
@@ -239,12 +247,16 @@ export default function App() {
       ===================== */}
       {view === "chat" && (
         <>
-          <div style={{
-            minHeight: 300,
-            marginBottom: 10,
-            padding: 10,
-            background: "#f5f5f5"
-          }}>
+          <div
+            id="chat-box"
+            style={{
+              height: "60vh",       // 高さ固定
+              overflowY: "auto",    // スクロール
+              marginBottom: 10,
+              padding: 10,
+              background: "#f5f5f5"
+            }}
+          >
             {messages.map((m, i) => {
               const isMe = m.name === user;
 
