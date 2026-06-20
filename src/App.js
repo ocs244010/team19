@@ -56,6 +56,7 @@ export default function App() {
 
     const unsub = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => doc.data());
+      data.sort((a, b) => a.createdAt - b.createdAt);
       setMessages(data);
     });
 
