@@ -5,7 +5,9 @@ import {
   setDoc,
   onSnapshot,
   collection,
-  addDoc
+  addDoc,
+  query,
+  orderBy
 } from "firebase/firestore";
 
 export default function App() {
@@ -46,11 +48,13 @@ export default function App() {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
-      const data = snapshot.docs.map(doc => doc.data());
-      // 時間で並び替え
-      data.sort((a, b) => a.createdAt - b.createdAt);
+    const q = query(
+      collection(db, "messages"),
+      orderBy("createdAt")
+    );
 
+    const unsub = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => doc.data());
       setMessages(data);
     });
 
