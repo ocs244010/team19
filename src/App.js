@@ -8,7 +8,6 @@ import {
   addDoc,
   query,
   orderBy,
-  serverTimestamp
 } from "firebase/firestore";
 
 export default function App() {
@@ -51,12 +50,11 @@ export default function App() {
   useEffect(() => {
     const q = query(
       collection(db, "messages"),
-      orderBy("createdAt")
+      orderBy("createdAt", "asc")
     );
 
     const unsub = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => doc.data());
-      data.sort((a, b) => a.createdAt - b.createdAt);
       setMessages(data);
     });
 
