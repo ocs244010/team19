@@ -129,6 +129,17 @@ export default function App() {
     return () => unsub();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+        window.scrollTo(0, 0);
+      }, 50);
+    }
+  }, [user]);
+
   const updateCell = async (key, value) => {
     const newSheet = { ...sheet, [key]: value };
     setSheet(newSheet);
