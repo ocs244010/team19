@@ -56,6 +56,7 @@ export default function App() {
 
     const unsub = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => doc.data());
+      data.sort((a, b) => a.createdAt - b.createdAt);
       setMessages(data);
     });
 
@@ -76,7 +77,7 @@ export default function App() {
     await addDoc(collection(db, "messages"), {
       text: input,
       name: user,
-      createdAt: serverTimestamp()
+      createdAt: Date.now()
     });
 
     setInput("");
