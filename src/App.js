@@ -33,6 +33,7 @@ export default function App() {
     if (ok) {
       setUser(ok.name);
       localStorage.setItem("user", ok.name);
+      document.activeElement.blur();
     }
 
     else alert("ログイン失敗");
