@@ -141,7 +141,11 @@ export default function App() {
   };
 
   return (
-    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
+    <div style={{
+      padding: 20,
+      fontFamily: "sans-serif",
+      fontSize: 16
+    }}>
 
       {!user && (
         <>
