@@ -70,7 +70,7 @@ export default function App() {
 
     await addDoc(collection(db, "messages"), {
       text: input,
-      name: user
+      name: user,
       createdAt: Date.now()
     });
 
