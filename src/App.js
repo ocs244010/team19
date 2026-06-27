@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
+import { getDoc } from "firebase/firestore";
 import {
   doc,
   setDoc,
   onSnapshot,
   collection,
   addDoc,
+  query,
+  orderBy
 } from "firebase/firestore";
 
 export default function App() {
@@ -45,22 +48,19 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
-      const data = snapshot.docs.map(doc => ({
+  
+useEffect(() => {
+  const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
+    const data = snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id
     }));
 
-      data.sort((a, b) => a.id.localeCompare(b.id));
-      setMessages(data);
-      const maxIndex =
-        data.length > 0
-          ? Math.max(...data.map(m => m.index))
-          : -1;
+    const filtered = data.filter(m => m.index !== undefined);
 
-      setCount(maxIndex + 1);
+    filtered.sort((a, b) => a.index - b.index);
 
+    setMessages(filtered);
       });
 
     return () => unsub();
@@ -77,12 +77,23 @@ export default function App() {
   const sendMessage = async () => {
     if (!input || !user) return;
 
+    const counterRef = doc(db, "counters", "chat");
+
+    const snap = await getDoc(counterRef);
+    const current = snap.data()?.value || 0;
+
+    const next = current + 1;
+
+    // 🔴 カウンタ更新
+    await setDoc(counterRef, { value: next });
+
+    // 🔴 メッセージ保存
     await addDoc(collection(db, "messages"), {
       text: input,
-      name: user
+      name: user,
+      index: next
     });
 
-    setCount(count + 1);
     setInput("");
   };
 
@@ -277,7 +288,7 @@ export default function App() {
 
               return (
                 <div
-                  key={i}
+                  key={m.id}
                   style={{
                     textAlign: isMe ? "right" : "left",
                     marginBottom: 10
