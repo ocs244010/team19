@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { getDoc } from "firebase/firestore";
+import { runTransaction } from "firebase/firestore";
+import { increment } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import {
   doc,
   setDoc,
@@ -58,10 +61,25 @@ useEffect(() => {
 
     const filtered = data.filter(m => m.index !== undefined);
 
-    filtered.sort((a, b) => a.index - b.index);
+    // ✅ 最大indexを取る
+    const maxIndex = Math.max(...filtered.map(m => m.index), 0);
 
-    setMessages(filtered);
-      });
+    // ✅ 連番かチェック
+    const isComplete = filtered.length === maxIndex;
+
+    if (!isComplete) {
+      return; // ✅ まだ揃ってないから描画しない
+    }
+
+    filtered.sort((a, b) => {
+      if (a.index !== b.index) {
+        return a.index - b.index;
+      }
+      return a.createdAt - b.createdAt;
+    });
+
+    setMessages([...filtered]);
+  });
 
     return () => unsub();
   }, []);
@@ -78,20 +96,23 @@ useEffect(() => {
     if (!input || !user) return;
 
     const counterRef = doc(db, "counters", "chat");
+    const messagesRef = collection(db, "messages");
 
-    const snap = await getDoc(counterRef);
-    const current = snap.data()?.value || 0;
+    await runTransaction(db, async (transaction) => {
 
-    const next = current + 1;
+      const snap = await transaction.get(counterRef);
+      const next = (snap.data()?.value || 0) + 1;
 
-    // 🔴 カウンタ更新
-    await setDoc(counterRef, { value: next });
+      transaction.update(counterRef, { value: next });
 
     // 🔴 メッセージ保存
-    await addDoc(collection(db, "messages"), {
-      text: input,
-      name: user,
-      index: next
+    const newMessageRef = doc(messagesRef);
+      transaction.set(newMessageRef, {
+        text: input,
+        name: user,
+        index: next,
+        createdAt: serverTimestamp()
+      });
     });
 
     setInput("");
