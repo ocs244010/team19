@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import { db } from "./firebase";
-import { getDoc } from "firebase/firestore";
 import { runTransaction } from "firebase/firestore";
-import { increment } from "firebase/firestore";
 import { serverTimestamp } from "firebase/firestore";
 import {
   doc,
   setDoc,
   onSnapshot,
-  collection,
-  addDoc,
-  query,
-  orderBy
+  collection
 } from "firebase/firestore";
 
 export default function App() {
