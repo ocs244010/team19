@@ -27,8 +27,11 @@ export default function App() {
   const [passInput, setPassInput] = useState("");
 
   const users = [
-    { name: "山田", password: "1234567" },
-    { name: "田中", password: "7654321" }
+    { name: "森中", password: "0402529" },
+    { name: "切畠", password: "4246240" },
+    { name: "鶴間", password: "4246253" },
+    { name: "松尾", password: "4246258" },
+    { name: "加藤", password: "4246273" }
   ];
 
   const login = () => {
